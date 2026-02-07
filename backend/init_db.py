@@ -9,7 +9,7 @@ def initialize_erp_database():
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    # --- CORE CLIENT TABLE (Updated with Debt) ---
+    # --- CORE CLIENT TABLE ---
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS clients (
             Client_ID TEXT PRIMARY KEY,
@@ -20,7 +20,7 @@ def initialize_erp_database():
         )
     ''')
 
-    # --- TABLE 1 & 2: INVOICES (SENT & RECEIVED) ---
+    # --- TABLE 1 & 2: INVOICES (Updated with payment_status) ---
     for table_name in ["INV_SENT", "INV_REC"]:
         cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS {table_name} (
@@ -35,11 +35,12 @@ def initialize_erp_database():
                 currency_mode TEXT,
                 T_GST REAL,
                 Total REAL,
+                payment_status TEXT DEFAULT 'Incomplete',
                 FOREIGN KEY (Client_ID) REFERENCES clients (Client_ID)
             )
         ''')
 
-    # --- TABLE 3 & 4: RECEIPTS (SENT & RECEIVED) ---
+    # --- TABLE 3 & 4: RECEIPTS ---
     for table_name in ["REC_SENT", "REC_REC"]:
         cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS {table_name} (
@@ -57,7 +58,7 @@ def initialize_erp_database():
             )
         ''')
 
-    # --- TABLE 5 & 6: INVOICE ITEMS (SENT & RECEIVED) ---
+    # --- TABLE 5 & 6: INVOICE ITEMS ---
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS ITEMS_INV_SENT (
             item_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -92,7 +93,7 @@ def initialize_erp_database():
         )
     ''')
 
-    # --- TABLE 7 & 8: RECEIPT ITEMS (RECEIVED & SENT) ---
+    # --- TABLE 7 & 8: RECEIPT ITEMS ---
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS ITEMS_REC_REC (
             item_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -148,7 +149,7 @@ def initialize_erp_database():
 
     conn.commit()
     conn.close()
-    print("💎 ERP Database Schema fully initialized with 11 tables (Client Debt included).")
+    print("💎 ERP Database Schema fully initialized (11 Tables + Invoice Status Columns).")
 
 if __name__ == "__main__":
     initialize_erp_database()
