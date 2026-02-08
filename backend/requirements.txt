@@ -1,7 +1,9 @@
-google-genai
 streamlit
 pandas
 plotly
-scikit-learn
+google-genai
 python-dotenv
+Pillow
 requests
+groq
+streamlit-mic-recorder
